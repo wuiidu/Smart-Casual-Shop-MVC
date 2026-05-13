@@ -1,0 +1,164 @@
+﻿@model ShopQuanAo_MVC.Models.AdminProductVM
+@{
+    ViewBag.Title = "Thêm sản phẩm mới";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="container py-3">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4>Thêm sản phẩm mới</h4>
+        <a href="@Url.Action("Index", "Dashboard")" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left"></i> Quay lại
+        </a>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-4">
+
+            @* Hiển thị thông báo lỗi *@
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div class="alert alert-danger">
+                    @Html.ValidationSummary(false, "", new { @class = "mb-0" })
+                </div>
+            }
+
+            @* Form nhập liệu *@
+            <form action="@Url.Action("Create", "Dashboard", new { area = "Admin" })" method="post" enctype="multipart/form-data" id="createProductForm">
+                @Html.AntiForgeryToken()
+
+                <div class="row g-3">
+                    @* Tên SP *@
+                    <div class="col-md-8">
+                        <label class="form-label fw-bold">Tên sản phẩm <span class="text-danger">*</span></label>
+                        <input type="text" name="TenSanPham" class="form-control" required placeholder="Nhập tên sản phẩm..." value="@Model.TenSanPham" />
+                    </div>
+
+                    @* Danh mục *@
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold">Danh mục <span class="text-danger">*</span></label>
+                        @Html.DropDownList("MaDanhMuc", (SelectList)ViewBag.MaDanhMuc, new { @class = "form-select", id = "ddlCategory" })
+                    </div>
+
+                    @* Ảnh *@
+                    <div class="col-12">
+                        <label class="form-label fw-bold">Hình ảnh đại diện <span class="text-danger">*</span></label>
+                        <input type="file" name="ImageFile" class="form-control" accept="image/*" required />
+                    </div>
+
+                    @* Mô tả *@
+                    <div class="col-12">
+                        <label class="form-label fw-bold">Mô tả sản phẩm</label>
+                        <textarea name="MoTa" class="form-control" rows="4" placeholder="Mô tả chi tiết...">@Model.MoTa</textarea>
+                    </div>
+
+                    @* Bảng Giá & Size *@
+                    <div class="col-12 mt-3">
+                        <label class="form-label fw-bold">Chi tiết Kích thước & Giá <span class="text-danger">*</span></label>
+                        <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                            <table class="table table-bordered table-sm text-center align-middle">
+                                <thead class="table-light sticky-top">
+                                    <tr>
+                                        <th style="width: 50px;">Chọn</th>
+                                        <th>Size</th>
+                                        <th>Giá bán (VNĐ)</th>
+                                        <th>Số lượng</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model.ChiTietSize != null)
+                                    {
+                                        for (int i = 0; i < Model.ChiTietSize.Count; i++)
+                                        {
+                                            var item = Model.ChiTietSize[i];
+                                            string sizeName = item.SizeName;
+
+                                            // Kiểm tra xem là size số (Giày) hay chữ (Áo/Quần)
+                                            int n;
+                                            bool isNumber = int.TryParse(sizeName, out n);
+                                            string rowClass = isNumber ? "size-row-num" : "size-row-text";
+
+                                            // Tạo name cho input để Controller nhận được List
+                                            string nameSelected = "ChiTietSize[" + i + "].IsSelected";
+                                            string nameSize = "ChiTietSize[" + i + "].SizeName";
+                                            string namePrice = "ChiTietSize[" + i + "].GiaBan";
+                                            string nameQty = "ChiTietSize[" + i + "].SoLuong";
+
+                                            <tr class="@rowClass">
+                                                <td>
+                                                    <input type="checkbox" name="@nameSelected" value="true" class="form-check-input size-checkbox" @(item.IsSelected ? "checked" : "") />
+                                                    <input type="hidden" name="@nameSelected" value="false" />
+                                                </td>
+                                                <td>
+                                                    <span class="fw-bold">@sizeName</span>
+                                                    <input type="hidden" name="@nameSize" value="@sizeName" />
+                                                </td>
+                                                <td>
+                                                    <input type="number" name="@namePrice" class="form-control form-control-sm" min="0" value="@item.GiaBan" />
+                                                </td>
+                                                <td>
+                                                    <input type="number" name="@nameQty" class="form-control form-control-sm" min="0" value="@item.SoLuong" />
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="form-text text-muted">
+                            <i class="fas fa-info-circle me-1"></i>Hệ thống sẽ tự động hiển thị size phù hợp theo Danh mục bạn chọn.
+                        </div>
+                    </div>
+
+                    @* Nút Lưu *@
+                    <div class="col-12 mt-4 text-end">
+                        <button type="submit" class="btn btn-primary px-4 py-2">
+                            <i class="fas fa-save me-2"></i> Lưu sản phẩm
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const ddlCategory = document.getElementById('ddlCategory');
+            const textRows = document.querySelectorAll('.size-row-text');
+            const numRows = document.querySelectorAll('.size-row-num');
+
+            function updateSizeDisplay() {
+                const category = ddlCategory.value;
+
+                // Bỏ tick checkbox của những dòng bị ẩn
+                const resetRow = (row) => {
+                    const checkbox = row.querySelector('.size-checkbox');
+                    if (checkbox) checkbox.checked = false;
+                };
+
+                if (category === 'G') {
+                    // Nếu là Giày: Hiện số, Ẩn chữ
+                    numRows.forEach(r => r.style.display = 'table-row');
+                    textRows.forEach(r => {
+                        r.style.display = 'none';
+                        resetRow(r);
+                    });
+                } else {
+                    // Nếu là Áo hoặc Quần: Hiện chữ, Ẩn số
+                    textRows.forEach(r => r.style.display = 'table-row');
+                    numRows.forEach(r => {
+                        r.style.display = 'none';
+                        resetRow(r);
+                    });
+                }
+            }
+
+            if (ddlCategory) {
+                updateSizeDisplay();
+                ddlCategory.addEventListener('change', updateSizeDisplay);
+            }
+        });
+    </script>
+}

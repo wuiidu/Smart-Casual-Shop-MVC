@@ -1,0 +1,246 @@
+﻿@model List<ShopQuanAo_MVC.Models.CartItem>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Thanh Toán";
+}
+
+<style>
+    /* Tùy chỉnh danh sách sản phẩm có thanh cuộn nếu quá dài */
+    .checkout-product-list {
+        max-height: 190px; /* Giảm chiều cao chút cho gọn */
+        overflow-y: auto;
+        padding-right: 5px;
+    }
+
+        /* Tùy chỉnh thanh cuộn cho đẹp */
+        .checkout-product-list::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .checkout-product-list::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .checkout-product-list::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 5px;
+        }
+</style>
+
+<div class="x-breadcrumb__area base-bg">
+    <div class="x-breadcrumb__bg w-img x-breadcrumb__overlay"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-xxl-12">
+                <div class="x-breadcrumb__content p-relative z-index-1">
+                    <div class="x-breadcrumb__list">
+                        <span><a href="@Url.Action("Index", "Home")">Trang chủ</a></span>
+                        <span class="dvdr"><i class="icon-arrow-right"></i></span>
+                        <span>Thanh toán</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="checkout-area pt-2 pb-40">
+    <div class="container">
+        <form id="checkout-form">
+            <div class="row">
+                @*THÔNG TIN GIAO HÀNG*@
+                <div class="col-lg-8">
+                    <h3 class="mb-30">Thông tin giao hàng</h3>
+                    <div class="checkbox-form">
+                        <div class="row" style="color: #000">
+                            <div class="col-md-6">
+                                <div class="checkout-form-list">
+                                    <label>Họ và tên <span class="required">*</span></label>
+                                    <input type="text" name="tenNguoiNhan" placeholder="Nhập họ tên người nhận" required value="@ViewBag.UserTen">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="checkout-form-list">
+                                    <label>Số điện thoại <span class="required">*</span></label>
+                                    <input type="tel" name="soDienThoai" placeholder="Nhập số điện thoại" required value="@ViewBag.UserSdt">
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="checkout-form-list">
+                                    <label>Địa chỉ nhận hàng <span class="required">*</span></label>
+                                    <input type="text" name="diaChi" placeholder="Số nhà, tên đường, phường/xã, quận/huyện..." required value="@ViewBag.UserDiaChi">
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="checkout-form-list">
+                                    <label>Ghi chú đơn hàng</label>
+                                    <textarea name="ghiChu" placeholder="Ví dụ: Giao hàng vào giờ hành chính, gọi trước khi giao..."></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                @*CHI TIẾT HÓA ĐƠN*@
+                <div class="col-lg-4">
+                    <div class="shop_cart_widget x-accordion">
+                        <div class="accordion" id="checkout_accordion">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="checkout_widget">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#checkout_widget_collapse" aria-expanded="true" aria-controls="checkout_widget_collapse">
+                                        Chi tiết hóa đơn
+                                    </button>
+                                </h2>
+                                <div id="checkout_widget_collapse" class="accordion-collapse collapse show" aria-labelledby="checkout_widget" data-bs-parent="#checkout_accordion">
+                                    <div class="accordion-body">
+                                        <div class="cart-checkout" style="border: none !important; padding-bottom: 0 !important; margin-bottom: 0 !important">
+                                            @*Sản phẩm*@
+                                            <h4>Sản phẩm</h4>
+                                            <ul class="list-group list-group-flush checkout-product-list">
+                                                @foreach (var item in Model)
+                                                {
+                                                    <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                                        <div class="d-flex align-items-center">
+                                                            <div class="ms-2">
+                                                                <h6 class="my-0 text-dark" style="font-size: 14px;">@item.TenSanPham</h6>
+                                                                <small class="text-muted">Size: @item.TenKichThuoc | x @item.SoLuong</small>
+                                                            </div>
+                                                        </div>
+                                                        <span class="text-muted fw-bold" style="font-size: 14px;">@item.ThanhTien.ToString("N0")đ</span>
+                                                    </li>
+                                                }
+                                            </ul>
+                                            <hr class="my-3" style="border-color: #888;">
+
+                                            @*Phương thức thanh toán*@
+                                            <h4>Phương thức thanh toán</h4>
+                                            <div class="shop__widget-list mb-4">
+                                                <div class="shop__widget-list-item-2">
+                                                    <input type="radio" name="phuongThucThanhToan" id="payment_cod" value="Thanh toán khi nhận hàng" checked>
+                                                    <label for="payment_cod">Thanh toán khi nhận hàng</label>
+                                                </div>
+                                                <div class="shop__widget-list-item-2">
+                                                    <input type="radio" name="phuongThucThanhToan" id="payment_transfer" value="Chuyển khoản">
+                                                    <label for="payment_transfer">Chuyển khoản</label>
+                                                </div>
+                                                <div class="shop__widget-list-item-2">
+                                                    <input type="radio" name="phuongThucThanhToan" id="payment_card" value="Thẻ tín dụng/ghi nợ">
+                                                    <label for="payment_card">Thẻ tín dụng/ghi nợ</label>
+                                                </div>
+                                            </div>
+                                            <hr class="my-3" style="border-color: #888;">
+
+                                            @*Tiền hóa đơn*@
+                                            <div class="cart-totails">
+                                                <table style="width: 100%">
+                                                    <tr>
+                                                        <td>Tạm tính:</td>
+                                                        <td style="text-align: right; font-weight: bold; padding: 5px 0;">@ViewBag.TamTinh.ToString("N0")đ</td>
+                                                    </tr>
+
+                                                    <tr>
+                                                        <td>Phí vận chuyển:</td>
+                                                        <td style="text-align: right; font-weight: bold; padding: 5px 0;">@ViewBag.PhiShip.ToString("N0")đ</td>
+                                                    </tr>
+
+                                                    <tr>
+                                                        <td style="color: #198754;">Giảm giá:</td>
+                                                        <td style="text-align: right; font-weight: bold; color: #198754; padding: 5px 0;">-@ViewBag.GiamGia.ToString("N0")đ</td>
+                                                    </tr>
+
+                                                    <tr>
+                                                        <td style="vertical-align: middle;">
+                                                            <h5 style="margin: 0; font-weight: bold; font-size: 18px;">Tổng cộng:</h5>
+                                                        </td>
+                                                        <td style="text-align: right; vertical-align: middle;">
+                                                            <span class="text-danger" style="margin: 0; font-weight: bold; font-size: 18px;">@ViewBag.TongCong.ToString("N0")đ</span>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+
+                                            @*Nút HOÀN TẤT ĐẶT HÀNG*@
+                                            <button type="submit" class="cart-checkout-btn w-100 mt-3" id="btn-place-order">HOÀN TẤT ĐẶT HÀNG</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+
+<div class="modal fade" id="orderSuccessModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-center">
+            <div class="modal-body py-5">
+                <i class="fas fa-check-circle fa-4x text-success mb-3"></i>
+                <h4 class="mb-2">Đặt hàng thành công!</h4>
+                <p>Mã đơn hàng: <strong id="success-order-id" class="text-primary"></strong></p>
+                <p>Cảm ơn bạn đã mua sắm tại Smart Casual.</p>
+                <a href="@Url.Action("Index", "Home")" class="btn btn-success mt-3 px-4">Tiếp tục mua sắm</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+
+            // Hàm hiển thị Toast thông báo lỗi (Màu đỏ)
+            function showErrorToast(message) {
+                var toastEl = document.getElementById('cartToast');
+                if (toastEl) {
+                    $(toastEl).removeClass('text-bg-success').addClass('text-bg-danger');
+                    $(toastEl).find('.toast-body').text(message);
+                    var toast = new bootstrap.Toast(toastEl);
+                    toast.show();
+                } else {
+                    alert(message);
+                }
+            }
+
+            $('#checkout-form').submit(function (e) {
+                // Chặn load lại trang
+                e.preventDefault();
+
+                var btn = $('#btn-place-order');
+                btn.prop('disabled', true).text('Đang xử lý...');
+
+                // Gom dữ liệu từ form
+                var formData = $(this).serialize();
+
+                $.ajax({
+                    url: '/Home/PlaceOrder',
+                    type: 'POST',
+                    data: formData,
+                    success: function (res) {
+                        if (res.success) {
+                            // Cập nhật lại số lượng đơn hàng trên Header ngay lập tức
+                            if (typeof refreshOrderCount === 'function') {
+                                refreshOrderCount();
+                            }
+
+                            // Hiện popup thành công
+                            $('#success-order-id').text(res.maDonHang);
+                            var myModal = new bootstrap.Modal(document.getElementById('orderSuccessModal'));
+                            myModal.show();
+                        } else {
+                            showErrorToast(res.message);
+                            btn.prop('disabled', false).text('HOÀN TẤT ĐẶT HÀNG');
+                        }
+                    },
+                    error: function () {
+                        // Lỗi kết nối server cũng hiện Toast đỏ
+                        showErrorToast('Lỗi kết nối server!');
+                        btn.prop('disabled', false).text('HOÀN TẤT ĐẶT HÀNG');
+                    }
+                });
+            });
+        });
+    </script>
+}

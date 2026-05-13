@@ -1,0 +1,299 @@
+﻿@model IEnumerable<ShopQuanAo_MVC.Models.ProductVM>
+@{
+    ViewBag.Title = "Trang Chủ";
+}
+
+@*Banner*@
+<div id="mainCarousel" class="carousel slide mb-4" data-bs-ride="carousel" data-bs-interval="2000">
+    @*Thanh chuyển banner bên dưới*@
+    <div class="carousel-indicators">
+        @if (ViewBag.BannerImages != null)
+        {
+            var banners = ViewBag.BannerImages as List<string>;
+            for (int i = 0; i < banners.Count; i++)
+            {
+                <button type="button" data-bs-target="#mainCarousel" data-bs-slide-to="@i"
+                        class="@(i == 0 ? "active" : "")" aria-current="true" aria-label="Slide @(i+1)"></button>
+            }
+        }
+    </div>
+
+    @*Slides ảnh banner*@
+    <div class="carousel-inner">
+        @if (ViewBag.BannerImages != null)
+        {
+            var banners = ViewBag.BannerImages as List<string>;
+            for (int i = 0; i < banners.Count; i++)
+            {
+                var activeClass = i == 0 ? "active" : "";
+                <div class="carousel-item @activeClass">
+                    <img src="@banners[i]" class="d-block w-100" style="height: 400px; object-fit: cover; object-position: center top;" alt="Banner @(i+1)">
+                </div>
+            }
+        }
+    </div>
+
+    @*Nút điều hướng Trái/Phải*@
+    <button class="carousel-control-prev" type="button" data-bs-target="#mainCarousel" data-bs-slide="prev" style="width: 5%;">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#mainCarousel" data-bs-slide="next" style="width: 5%;">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
+</div>
+
+@*Trang Phục Thịnh Hành*@
+<div class="x-product-eight mb-10">
+    <div class="container">
+        @*Tiêu đề*@
+        <div class="x-sec-heading x-sec-heading-three text-center">
+            <h3 class="x-sec-heading__title x-style-3">Trang phục thịnh hành</h3>
+            <div class="x-sec-heading__shape">
+                <img src="/assets/img/resourse/sec-title-border.png" alt="border">
+            </div>
+        </div>
+
+        @*Sản phẩm*@
+        <div class="row gutter-y-30">
+            @if (ViewBag.Trending != null)
+            {
+                foreach (var item in ViewBag.Trending as IEnumerable<ShopQuanAo_MVC.Models.ProductVM>)
+                {
+                    <div class="col-xl-3 col-md-6 col-sm-6 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            <div class="position-relative">
+                                <a href="@Url.Action("product_details", "Home", new { id = item.MaSP })">
+                                    <img src="/@item.AnhDaiDien" class="card-img-top"
+                                         alt="@item.TenSanPham"
+                                         style="width:100%; height:200px; object-fit:contain; border-bottom:1px solid #eee;">
+                                </a>
+                            </div>
+                            <div class="card-body d-flex flex-column">
+                                <div class="mb-2 d-flex align-items-center">
+                                    <span class="text-warning small">
+                                        @item.DiemDanhGia.ToString("0.0") <i class="fas fa-star"></i>
+                                    </span>
+                                    <span class="text-muted small ms-1">(@item.SoLuongDanhGia)</span>
+                                </div>
+                                <h5 class="card-title mb-2">
+                                    <a href="@Url.Action("product_details", "Home", new { id = item.MaSP })"
+                                       class="text-decoration-none text-dark">
+                                        @item.TenSanPham
+                                    </a>
+                                </h5>
+                                <div class="mt-auto d-flex justify-content-between align-items-center">
+                                    <span class="fw-bold text-danger">@item.GiaBan.ToString("N0")đ</span>
+
+                                    <a href="javascript:void(0);" class="btn btn-outline-primary btn-sm ajax-add-to-cart" data-id="@item.MaSP" title="Thêm vào giỏ">
+                                        <i class="fas fa-shopping-cart"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>
+
+@*Form Lọc & Danh Sách Sản Phẩm*@
+<section id="shop-area" class="x-shop-area pt-0 mb-50">
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-12 col-lg-8">
+                @*Lọc sản phẩm*@
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <form action="@Url.Action("Index", "Home")" method="get" class="row g-3 align-items-end">
+                            <input type="hidden" name="page" value="1" />
+
+                            <div class="col-md-3">
+                                <input type="text" class="form-control" name="searchName" value="@ViewBag.SearchName" placeholder="Nhập tên sản phẩm...">
+                            </div>
+
+                            <div class="col-md-2">
+                                <label class="form-label mb-1">Danh mục</label>
+                                <select class="form-select" name="category">
+                                    <option value="">Tất cả</option>
+                                    <option value="Áo" @(ViewBag.Category == "Áo" ? "selected" : "")>Áo</option>
+                                    <option value="Quần" @(ViewBag.Category == "Quần" ? "selected" : "")>Quần</option>
+                                    <option value="Giày" @(ViewBag.Category == "Giày" ? "selected" : "")>Giày</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-2">
+                                <label class="form-label mb-1">Khoảng giá</label>
+                                <select class="form-select" name="priceRange">
+                                    <option value="">Tất cả</option>
+                                    <option value="0-300000" @(ViewBag.PriceRange == "0-300000" ? "selected" : "")>Dưới 300.000đ</option>
+                                    <option value="300000-600000" @(ViewBag.PriceRange == "300000-600000" ? "selected" : "")>300.000đ - 600.000đ</option>
+                                    <option value="600000-1000000" @(ViewBag.PriceRange == "600000-1000000" ? "selected" : "")>600.000đ - 1.000.000đ</option>
+                                    <option value="1000000-999999999" @(ViewBag.PriceRange == "1000000-999999999" ? "selected" : "")>Trên 1.000.000đ</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-2">
+                                <label class="form-label mb-1">Sắp xếp</label>
+                                <select name="sortType" class="form-select">
+                                    <option value="default" @(ViewBag.SortType == "default" ? "selected" : "")>Mặc định</option>
+                                    <option value="desc" @(ViewBag.SortType == "desc" ? "selected" : "")>Giảm dần theo giá</option>
+                                    <option value="asc" @(ViewBag.SortType == "asc" ? "selected" : "")>Tăng dần theo giá</option>
+                                    <option value="rating" @(ViewBag.SortType == "rating" ? "selected" : "")>Đánh giá cao</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-3 d-grid">
+                                <button type="submit" class="btn btn-primary mt-3"><i class="fas fa-search me-1"></i>Tìm kiếm</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                @*Sản phẩm & Số trang*@
+                <div class="x-shop-main-wrapper">
+                    @*Danh sách sản phẩm*@
+                    <div class="x-shop-items-wrapper x-shop-item-primary">
+                        <div class="row gutter-y-20">
+                            @foreach (var item in Model)
+                            {
+                                <div class="col-xl-3 col-md-6 col-sm-6 mb-1">
+                                    <div class="card h-100 shadow-sm">
+                                        <div class="position-relative">
+                                            <a href="@Url.Action("product_details", "Home", new { id = item.MaSP })">
+                                                <img src="/@item.AnhDaiDien" class="card-img-top"
+                                                     alt="@item.TenSanPham"
+                                                     style="width:100%; height:200px; object-fit:contain; border-bottom:1px solid #eee;">
+                                            </a>
+                                        </div>
+                                        <div class="card-body d-flex flex-column">
+                                            <div class="mb-2 d-flex align-items-center">
+                                                <span class="text-warning small">
+                                                    @item.DiemDanhGia.ToString("0.0") <i class="fas fa-star"></i>
+                                                </span>
+                                                <span class="text-muted small ms-1">(@item.SoLuongDanhGia)</span>
+                                            </div>
+                                            <h5 class="card-title mb-2">
+                                                <a href="@Url.Action("product_details", "Home", new { id = item.MaSP })"
+                                                   class="text-decoration-none text-dark">
+                                                    @item.TenSanPham
+                                                </a>
+                                            </h5>
+
+                                            <div class="mt-auto d-flex justify-content-between align-items-center">
+                                                <span class="fw-bold text-danger">
+                                                    @item.GiaBan.ToString("N0")đ
+                                                </span>
+
+                                                <a href="javascript:void(0);" class="btn btn-outline-primary btn-sm ajax-add-to-cart" data-id="@item.MaSP" title="Thêm vào giỏ">
+                                                    <i class="fas fa-shopping-cart"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    @*Trang sản phẩm*@
+                    <div class="x-shop-pagination mt-20">
+                        <div class="x-pagination text-center">
+                            <ul>
+                                @if (ViewBag.TotalPages > 1)
+                                {
+                                    var filterParams = new RouteValueDictionary {
+                                        { "searchName", ViewBag.SearchName },
+                                        { "category", ViewBag.Category },
+                                        { "priceRange", ViewBag.PriceRange },
+                                        { "sortType", ViewBag.SortType }
+                                    };
+
+                                    // Nút Quay lại
+                                    if (ViewBag.CurrentPage > 1)
+                                    {
+                                        filterParams["page"] = ViewBag.CurrentPage - 1;
+                                        <li>
+                                            <a href="@Url.Action("Index", filterParams)#shop-area">
+                                                <i class="fas fa-angle-left"></i>
+                                            </a>
+                                        </li>
+                                    }
+
+                                    // Các nút số trang
+                                    for (int i = 1; i <= ViewBag.TotalPages; i++)
+                                    {
+                                        filterParams["page"] = i;
+                                        <li>
+                                            <a class="@(i == ViewBag.CurrentPage ? "current" : "")"
+                                               href="@Url.Action("Index", filterParams)#shop-area">@i</a>
+                                        </li>
+                                    }
+
+                                    // Nút Kế tiếp
+                                    if (ViewBag.CurrentPage < ViewBag.TotalPages)
+                                    {
+                                        filterParams["page"] = ViewBag.CurrentPage + 1;
+                                        <li>
+                                            <a href="@Url.Action("Index", filterParams)#shop-area">
+                                                <i class="fas fa-angle-right"></i>
+                                            </a>
+                                        </li>
+                                    }
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            // Xử lý sự kiện click nút Thêm vào giỏ
+            $('.ajax-add-to-cart').click(function (e) {
+                e.preventDefault();
+                var btn = $(this);
+                var productId = btn.data('id');
+
+                $.ajax({
+                    url: '/Home/AddToCart',
+                    type: 'POST',
+                    data: { id: productId },
+                    success: function (response) {
+                        if (response.success) {
+                            // Cập nhật số lượng trên header
+                            $('.x-cart-count').text(response.count);
+
+                            // Hiển thị Toast thông báo thành công
+                            var toastEl = document.getElementById('cartToast');
+                            var toast = new bootstrap.Toast(toastEl);
+
+                            // Cập nhật nội dung toast nếu cần
+                            $('.toast-body').text(response.message);
+                            toast.show();
+                        } else {
+                            alert(response.message);
+                        }
+                    },
+                    error: function () {
+                        alert('Có lỗi xảy ra, vui lòng thử lại.');
+                    }
+                });
+            });
+
+            // Tự động cuộn
+            if (window.location.search.length > 1) {
+                const shopArea = document.getElementById('shop-area');
+                if (shopArea) {
+                    shopArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }
+        });
+    </script>
+}

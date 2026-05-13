@@ -1,0 +1,113 @@
+﻿@model ShopQuanAo_MVC.Models.RevenueReportVM
+@{
+    ViewBag.Title = "Thống kê doanh thu";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="d-flex flex-column gap-4">
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
+        <h4 class="mb-1 fw-bold">Báo cáo doanh thu</h4>
+        <button class="btn btn-outline-primary btn-sm" onclick="window.location.reload()">
+            <i class="fas fa-sync-alt"></i> Cập nhật dữ liệu
+        </button>
+    </div>
+
+    <div class="row g-3">
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 h-100" style="border-left: 5px solid #198754 !important;">
+                <div class="card-body">
+                    <div class="text-muted text-uppercase small fw-bold">Tổng doanh thu thực tế</div>
+                    <div class="fs-3 fw-bold text-success mt-2">@Model.TongDoanhThu.ToString("N0")đ</div>
+                    <div class="text-muted small mt-1"><i class="fas fa-check-circle me-1"></i>Từ @Model.DonHoanThanh đơn hoàn tất</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body">
+                    <div class="text-muted text-uppercase small fw-bold">Đơn hàng thành công</div>
+                    <div class="fs-3 fw-bold text-dark mt-2">@Model.DonHoanThanh</div>
+                    <div class="text-muted small mt-1">Đã giao & thanh toán</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body">
+                    <div class="text-muted text-uppercase small fw-bold">Đang xử lý</div>
+                    <div class="fs-3 fw-bold text-warning mt-2">@Model.DonDangXuLy</div>
+                    <div class="text-muted small mt-1">Cần xử lý gấp</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body">
+                    <div class="text-muted text-uppercase small fw-bold">Đơn đã hủy</div>
+                    <div class="fs-3 fw-bold text-danger mt-2">@Model.DonHuy</div>
+                    <div class="text-muted small mt-1">Thất bại</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0 p-3">
+        <div class="d-flex justify-content-between mb-2">
+            <div class="fw-semibold">Tỷ lệ hoàn thành đơn hàng</div>
+            <div class="fw-bold text-primary">@Model.TyLeHoanThanh%</div>
+        </div>
+        <div class="progress" style="height: 12px;">
+            <div class="progress-bar bg-success progress-bar-striped progress-bar-animated"
+                 role="progressbar" style="width: @Model.TyLeHoanThanh%"></div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-white py-3">
+            <h5 class="mb-0 text-secondary"><i class="fas fa-history me-2"></i>Lịch sử ghi nhận doanh thu</h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="bg-light">
+                        <tr>
+                            <th class="ps-4">Mã đơn hàng</th>
+                            <th>Khách hàng</th>
+                            <th>Ngày đặt</th>
+                            <th>Trạng thái thanh toán</th>
+                            <th class="text-end pe-4">Thực thu</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.DSDonHoanThanh != null && Model.DSDonHoanThanh.Any())
+                        {
+                            foreach (var item in Model.DSDonHoanThanh)
+                            {
+                                <tr>
+                                    <td class="ps-4 fw-bold text-primary">@item.MaDonHang</td>
+                                    <td>@item.TenKhachHang</td>
+                                    <td>@item.NgayDat.ToString("dd/MM/yyyy HH:mm")</td>
+                                    <td>
+                                        <span class="badge bg-success bg-opacity-10 text-success border border-success px-3">
+                                            <i class="fas fa-check me-1"></i>Đã thanh toán
+                                        </span>
+                                    </td>
+                                    <td class="text-end pe-4 fw-bold">@item.TongTien.ToString("N0")đ</td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="5" class="text-center py-5 text-muted">Chưa có đơn hàng nào hoàn tất để tính doanh thu.</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="da2fab6b337e4657a9039ec1bee8dca6" Name="Diagram1">
+        <EntityTypeShape EntityType="ShopQuanAoModel.CHI_TIET_DON_HANG" Width="1.5" PointX="8.25" PointY="2.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="ShopQuanAoModel.CHI_TIET_SP" Width="1.5" PointX="6" PointY="18.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="ShopQuanAoModel.DANH_GIA" Width="1.5" PointX="3" PointY="7.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="ShopQuanAoModel.DANH_MUC" Width="1.5" PointX="1.5" PointY="20.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="ShopQuanAoModel.DON_HANG" Width="1.5" PointX="6" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ShopQuanAoModel.GIO_HANG" Width="1.5" PointX="6" PointY="7.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ShopQuanAoModel.HINH_ANH_SP" Width="1.5" PointX="6" PointY="23.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="ShopQuanAoModel.KICH_THUOC" Width="1.5" PointX="3.75" PointY="17.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="ShopQuanAoModel.KHACH_HANG" Width="1.5" PointX="0.75" PointY="7.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="ShopQuanAoModel.MA_GIAM_GIA" Width="1.5" PointX="3.75" PointY="3.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="ShopQuanAoModel.NHAN_VIEN" Width="1.5" PointX="3.75" PointY="11.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="ShopQuanAoModel.PHUONG_THUC_VAN_CHUYEN" Width="1.5" PointX="3.75" PointY="14.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ShopQuanAoModel.SAN_PHAM" Width="1.5" PointX="3.75" PointY="20" IsExpanded="true" />
+        <EntityTypeShape EntityType="ShopQuanAoModel.sysdiagrams" Width="1.5" PointX="0.75" PointY="2" IsExpanded="true" />
+        <AssociationConnector Association="ShopQuanAoModel.FK_CTDH_CTSP" ManuallyRouted="false" />
+        <AssociationConnector Association="ShopQuanAoModel.FK_CTDH_DH" ManuallyRouted="false" />
+        <AssociationConnector Association="ShopQuanAoModel.FK_CTSP_SIZE" ManuallyRouted="false" />
+        <AssociationConnector Association="ShopQuanAoModel.FK_CTSP_SP" ManuallyRouted="false" />
+        <AssociationConnector Association="ShopQuanAoModel.FK_GIOHANG_CTSP" ManuallyRouted="false" />
+        <AssociationConnector Association="ShopQuanAoModel.FK_DANHGIA_KH" ManuallyRouted="false" />
+        <AssociationConnector Association="ShopQuanAoModel.FK_DANHGIA_SP" ManuallyRouted="false" />
+        <AssociationConnector Association="ShopQuanAoModel.FK_SANPHAM_DANHMUC" ManuallyRouted="false" />
+        <AssociationConnector Association="ShopQuanAoModel.FK_DONHANG_KHACHHANG" ManuallyRouted="false" />
+        <AssociationConnector Association="ShopQuanAoModel.FK_DONHANG_MAGIAMGIA" ManuallyRouted="false" />
+        <AssociationConnector Association="ShopQuanAoModel.FK_DONHANG_NHANVIEN" ManuallyRouted="false" />
+        <AssociationConnector Association="ShopQuanAoModel.FK_DONHANG_PTVC" ManuallyRouted="false" />
+        <AssociationConnector Association="ShopQuanAoModel.FK_GIOHANG_KH" ManuallyRouted="false" />
+        <AssociationConnector Association="ShopQuanAoModel.FK_HINHANH_SP" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

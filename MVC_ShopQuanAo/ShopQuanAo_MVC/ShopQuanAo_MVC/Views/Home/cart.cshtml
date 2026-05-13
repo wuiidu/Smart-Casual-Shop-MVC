@@ -1,0 +1,513 @@
+﻿@model List<ShopQuanAo_MVC.Models.CartItem>
+@using System.Linq  @using ShopQuanAo_MVC.Models @{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Giỏ Hàng";
+    var sizeDict = ViewBag.SizeDict as Dictionary<string, SelectList>;
+    bool isAllSelected = Model != null && Model.Count > 0 && Model.All(x => x.IsSelected);
+}
+
+<style>
+    /* Ẩn mũi tên trong input number */
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
+
+    /* Căn giữa nội dung trong bảng */
+    .table tbody tr td {
+        vertical-align: middle;
+    }
+
+    /* Chỉnh kích thước ảnh */
+    .cart-img {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 5px;
+        border: 1px solid #eee;
+    }
+</style>
+
+<!-- Breadcrumb -->
+<div class="x-breadcrumb__area base-bg">
+    <div class="x-breadcrumb__bg w-img x-breadcrumb__overlay"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-xxl-12">
+                <div class="x-breadcrumb__content p-relative z-index-1">
+                    <div class="x-breadcrumb__list">
+                        <span><a href="@Url.Action("Index", "Home")">Trang chủ</a></span>
+                        <span class="dvdr"><i class="icon-arrow-right"></i></span>
+                        <span>Giỏ hàng</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="x-cart-page pt-2 pb-40">
+    <div class="container">
+        <form action="#">
+            <div class="row gutter-y-30 gx-5">
+                @*GIỎ HÀNG*@
+                <div class="col-lg-8 col-xl-9">
+                    <div class="x-cart-page__table table-responsive">
+                        <table class="table table-borderless table-hover align-middle">
+                            <thead class="bg-white border-bottom">
+                                <tr>
+                                    <th style="width: 5%;" class="text-center">
+                                        <input type="checkbox" class="cart-item-checkbox-all form-check-input"
+                                               @(isAllSelected ? "checked" : "")>
+                                    </th>
+                                    <th style="width: 15%;" class="text-center">Hình ảnh</th>
+                                    <th style="width: 25%;" class="text-center">Tên sản phẩm</th>
+                                    <th style="width: 15%;" class="text-center">Kích thước</th>
+                                    <th style="width: 15%;" class="text-center">Giá</th>
+                                    <th style="width: 15%;" class="text-center">Số lượng</th>
+                                    <th style="width: 10%;" class="text-center">Xóa</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model != null && Model.Count > 0)
+                                {
+                                    foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td class="text-center">
+                                                <input type="checkbox" class="cart-item-checkbox form-check-input"
+                                                       name="selectedItems"
+                                                       value="@item.MaCTSP"
+                                                       data-id="@item.MaCTSP"
+                                                       @(item.IsSelected ? "checked" : "")>
+                                            </td>
+                                            <td>
+                                                <a href="@Url.Action("product_details", "Home", new { id = item.MaSP })">
+                                                    <img src="/@item.AnhDaiDien" alt="@item.TenSanPham" class="cart-img">
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <a href="@Url.Action("product_details", "Home", new { id = item.MaSP })" class="text-decoration-none text-dark fw-bold">
+                                                    @item.TenSanPham
+                                                </a>
+                                            </td>
+
+                                            <td>
+                                                @if (sizeDict != null && sizeDict.ContainsKey(item.MaCTSP))
+                                                {
+                                                    @Html.DropDownList("SizeSelect", sizeDict[item.MaCTSP], new
+                                                    {
+                                                        @class = "form-select form-select-sm size-changer shadow-none",
+                                                        @style = "width: 70px; margin: 0 auto;",
+                                                        @data_masp = item.MaSP,
+                                                        @data_old_mactsp = item.MaCTSP
+                                                    })
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-secondary">@item.TenKichThuoc</span>
+                                                }
+                                            </td>
+
+                                            <td class="fw-bold text-danger">
+                                                @item.DonGia.ToString("N0")đ
+                                            </td>
+
+                                            <td>
+                                                <div class="input-group input-group-sm" style="max-width: 110px; margin: 0 auto;">
+                                                    <button class="btn btn-outline-secondary btn-update-qty" type="button" data-type="minus" data-id="@item.MaCTSP">-</button>
+                                                    <input type="number" class="form-control text-center input-qty" value="@item.SoLuong" min="1" data-id="@item.MaCTSP">
+                                                    <button class="btn btn-outline-secondary btn-update-qty" type="button" data-type="plus" data-id="@item.MaCTSP">+</button>
+                                                </div>
+                                            </td>
+
+                                            <td class="text-center">
+                                                <button type="button" class="btn btn-link text-danger remove-btn p-0" data-id="@item.MaCTSP" title="Xóa sản phẩm">
+                                                    <i class="fas fa-trash-alt"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="7" class="text-center py-5">
+                                            <p class="text-muted">Giỏ hàng của bạn đang trống.</p>
+                                            <a href="@Url.Action("Index", "Home")" class="btn btn-primary mt-2">Mua sắm ngay</a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                @*CHI TIẾT HÓA ĐƠN*@
+                <div class="col-lg-4 col-xl-3">
+                    <div class="shop_cart_widget x-accordion">
+                        <div class="accordion" id="shop_size">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="size__widget">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#size_widget_collapse" aria-expanded="true" aria-controls="size_widget_collapse">
+                                        Chi tiết hóa đơn
+                                    </button>
+                                </h2>
+                                <div id="size_widget_collapse" class="accordion-collapse collapse show" aria-labelledby="size__widget" data-bs-parent="#shop_size">
+                                    <div class="accordion-body">
+
+                                        <div class="cart-coupon-code mb-2">
+                                            <input type="text" id="coupon-input" placeholder="Mã giảm giá" value="@ViewBag.CurrentCoupon" />
+                                            <button type="button" id="btn-apply-coupon">Áp dụng</button>
+                                        </div>
+                                        <div id="applied-coupon-container" class="mb-4"></div>
+
+                                        <div class="cart-checkout">
+                                            <h4>Vận chuyển</h4>
+                                            @{
+                                                var db = new ShopQuanAo_MVC.Models.ShopQuanAoEntities();
+                                                var shipMethods = db.PHUONG_THUC_VAN_CHUYEN.Where(x => x.TrangThai == true).ToList();
+                                            }
+                                            <div class="shop__widget-list">
+                                                @foreach (var ship in shipMethods)
+                                                {
+                                                    /* Kiểm tra nếu Session có lưu thì check theo Session, nếu không thì mặc định check cái đầu tiên hoặc check Bưu điện */
+                                                    string isChecked = "";
+                                                    if (ViewBag.CurrentShipping != null)
+                                                    {
+                                                        if (ViewBag.CurrentShipping == ship.MaPTVC) { isChecked = "checked"; }
+                                                    }
+                                                    else if (ship.MaPTVC == "BD")
+                                                    {
+                                                        isChecked = "checked";
+                                                    }
+
+                                                    <div class="shop__widget-list-item-2 d-flex justify-content-between align-items-center w-100">
+                                                        <div>
+                                                            <input type="radio" name="shipping"
+                                                                   id="ship_@ship.MaPTVC" value="@ship.MaPTVC" @isChecked>
+                                                            <label for="ship_@ship.MaPTVC" class="ms-1">@ship.TenPTVC</label>
+                                                        </div>
+                                                        <span class="fw-bold text-dark">@(((decimal)ship.GiaVanChuyen).ToString("N0"))đ</span>
+                                                    </div>
+                                                }
+                                            </div>
+                                        </div>
+
+                                        <div class="cart-totails mt-5 mb-5">
+                                            <table style="width: 100%">
+                                                <tr>
+                                                    <td>Tạm tính:</td>
+                                                    <td style="text-align: right; font-weight: bold;" id="lbl-subtotal">0đ</td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td>Phí vận chuyển:</td>
+                                                    <td style="text-align: right; font-weight: bold;" id="lbl-shipping">0đ</td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td style="color: #198754;">Giảm giá:</td>
+                                                    <td style="text-align: right; font-weight: bold; color: #198754;" id="lbl-discount">-0đ</td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td style="vertical-align: middle;">
+                                                        <span style="margin: 0; font-weight: bold; font-size: 18px;">Tổng cộng:</span>
+                                                    </td>
+                                                    <td style="text-align: right; vertical-align: middle;">
+                                                        <span id="lbl-grandtotal" style="margin: 0; font-weight: bold; font-size: 18px;" class="text-danger">0đ</span>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+
+                                        <a class="cart-checkout-btn" href="javascript:void(0);" id="btn-checkout">ĐẶT HÀNG</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            // Xử lý checkbox "Chọn tất cả" ở đầu tiêu đề
+            $('.cart-item-checkbox-all').change(function () {
+                var isChecked = $(this).prop('checked');
+                $('.cart-item-checkbox').prop('checked', isChecked);
+            });
+
+            // Xử lý khi bỏ chọn một checkbox con (thì bỏ chọn nút "Tất cả")
+            $('.cart-item-checkbox').change(function () {
+                var totalCheckbox = $('.cart-item-checkbox').length;
+                var totalChecked = $('.cart-item-checkbox:checked').length;
+                $('.cart-item-checkbox-all').prop('checked', totalCheckbox === totalChecked);
+            });
+
+            // Xử lý Đổi Size
+            $('.size-changer').change(function () {
+                var dropdown = $(this);
+                $.ajax({
+                    url: '/Home/UpdateCartSize',
+                    type: 'POST',
+                    data: {
+                        maSP: dropdown.data('masp'),
+                        oldMaCTSP: dropdown.attr('data-old-mactsp'),
+                        newSizeId: dropdown.val()
+                    },
+                    success: function (res) {
+                        if (res.success) location.reload();
+                        else alert(res.message);
+                    }
+                });
+            });
+
+            // Xử lý Tăng/Giảm số lượng
+            $('.btn-update-qty').click(function () {
+                var btn = $(this);
+                var type = btn.data('type');
+                var id = btn.data('id');
+                var input = btn.siblings('.input-qty');
+                var currentVal = parseInt(input.val()) || 0;
+                var newVal = currentVal;
+
+                if (type === 'plus') {
+                    newVal = currentVal + 1;
+                } else {
+                    if (currentVal > 1) {
+                        newVal = currentVal - 1;
+                    } else {
+                        return;
+                    }
+                }
+
+                // Gọi hàm AJAX cập nhật
+                updateQuantityAjax(id, newVal);
+            });
+
+            // Xử lý khi nhập tay vào ô số lượng
+            $('.input-qty').change(function () {
+                var input = $(this);
+                var id = input.data('id');
+                var val = parseInt(input.val());
+                if (val < 1 || isNaN(val)) {
+                    val = 1;
+                }
+                updateQuantityAjax(id, val);
+            });
+
+            // Hàm AJAX gọi về Server cập nhật số lượng
+            function updateQuantityAjax(id, qty) {
+                $.ajax({
+                    url: '/Home/UpdateCartQuantity',
+                    type: 'POST',
+                    data: { maCTSP: id, quantity: qty },
+                    success: function (res) {
+                        if (res.success) {
+                            location.reload();
+                        } else {
+                            alert('Lỗi cập nhật số lượng: ' + res.message);
+                        }
+                    },
+                    error: function () {
+                        alert('Lỗi kết nối đến máy chủ.');
+                    }
+                });
+            }
+
+            // Xử lý Xóa sản phẩm
+            $('.remove-btn').click(function () {
+                var id = $(this).data('id');
+                if (confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')) {
+                    $.ajax({
+                        url: '/Home/RemoveFromCart',
+                        type: 'POST',
+                        data: { maCTSP: id },
+                        success: function (res) {
+                            if (res.success) {
+                                location.reload();
+                            } else {
+                                alert('Lỗi khi xóa sản phẩm: ' + res.message);
+                            }
+                        },
+                        error: function () {
+                            alert('Lỗi kết nối đến máy chủ.');
+                        }
+                    });
+                }
+            });
+
+            // Xử lý khi tích vào 1 ô checkbox
+            $('.cart-item-checkbox').change(function () {
+                var id = $(this).data('id');
+                var isChecked = $(this).prop('checked');
+
+                // Cập nhật giao diện nút "Tất cả"
+                var totalCheckbox = $('.cart-item-checkbox').length;
+                var totalChecked = $('.cart-item-checkbox:checked').length;
+                $('.cart-item-checkbox-all').prop('checked', totalCheckbox === totalChecked);
+
+                // Gửi về Server để lưu trạng thái
+                $.ajax({
+                    url: '/Home/UpdateCartSelection',
+                    type: 'POST',
+                    data: { maCTSP: id, isSelected: isChecked }
+                });
+            });
+
+            // Xử lý khi tích "Chọn tất cả"
+            $('.cart-item-checkbox-all').change(function () {
+                var isChecked = $(this).prop('checked');
+                $('.cart-item-checkbox').prop('checked', isChecked);
+
+                // Báo Server lưu trạng thái tất cả
+                $.ajax({
+                    url: '/Home/UpdateCartSelectionAll',
+                    type: 'POST',
+                    data: { isSelected: isChecked }
+                });
+            });
+        });
+    </script>
+    <script>
+    $(document).ready(function () {
+
+        var currentCoupon = '@ViewBag.CurrentCoupon';
+
+        if (currentCoupon && currentCoupon !== '') {
+            renderAppliedCouponTag(currentCoupon);
+            $('#coupon-input').val('');
+        }
+
+        function showMyToast(message, type) {
+            var toastEl = document.getElementById('cartToast');
+            if (toastEl) {
+                $(toastEl).removeClass('text-bg-success text-bg-danger');
+                if (type === 'error') $(toastEl).addClass('text-bg-danger');
+                else $(toastEl).addClass('text-bg-success');
+
+                $(toastEl).find('.toast-body').text(message);
+                var toast = new bootstrap.Toast(toastEl);
+                toast.show();
+            } else {
+                alert(message);
+            }
+        }
+
+        function calculateOrderSummary(isApplyAction = false, isClearAction = false) {
+            var selectedIds = [];
+            $('.cart-item-checkbox:checked').each(function () {
+                selectedIds.push($(this).data('id'));
+            });
+
+            var shippingMethod = $('input[name="shipping"]:checked').val();
+            if (!shippingMethod) shippingMethod = "BD";
+
+            // Phân loại dựa trên hành động xóa, thêm, khác để gửi mã giảm giá về Server xử lý
+            var codeToSend = currentCoupon;
+            if (isApplyAction) {
+                codeToSend = $('#coupon-input').val().trim();
+            }
+            if (isClearAction) {
+                codeToSend = "";
+            }
+
+            $.ajax({
+                url: '/Home/GetOrderSummary',
+                type: 'POST',
+                data: {
+                    selectedIds: selectedIds,
+                    shippingMethod: shippingMethod,
+                    couponCode: codeToSend,
+                    clearCoupon: isClearAction
+                },
+                success: function (res) {
+                    $('#lbl-subtotal').text(res.TamTinh.toLocaleString('vi-VN') + 'đ');
+                    $('#lbl-shipping').text(res.PhiVanChuyen.toLocaleString('vi-VN') + 'đ');
+                    $('#lbl-discount').text('-' + res.GiamGia.toLocaleString('vi-VN') + 'đ');
+                    $('#lbl-grandtotal').text(res.TongCong.toLocaleString('vi-VN') + 'đ');
+
+                    if (isApplyAction) {
+                        // Logic khi bấm nút ÁP DỤNG
+                        if (res.CouponValid) {
+                            currentCoupon = res.AppliedCode;
+                            $('#coupon-input').val('');
+                            renderAppliedCouponTag(currentCoupon);
+                            showMyToast("Áp dụng mã thành công!", "success");
+                        } else {
+                            showMyToast(res.Message, "error");
+                        }
+                    } else {
+                        // Logic khi XÓA hoặc khi RELOAD tính toán
+                        if (res.AppliedCode && res.CouponValid) {
+                             currentCoupon = res.AppliedCode;
+                             renderAppliedCouponTag(currentCoupon);
+                        } else {
+                             // Nếu server bảo không có mã, xóa thẻ đi
+                             currentCoupon = "";
+                             renderAppliedCouponTag("");
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderAppliedCouponTag(code) {
+            var container = $('#applied-coupon-container');
+            container.empty();
+            if (code) {
+                var html = `
+                    <div class="d-inline-flex align-items-center bg-success text-white rounded px-2 py-1">
+                        <span class="me-2"><i class="fas fa-tag"></i> ${code}</span>
+                        <button type="button" class="btn-close btn-close-white remove-coupon" style="font-size: 10px;" aria-label="Close"></button>
+                    </div>
+                `;
+                container.html(html);
+            }
+        }
+
+        $('#btn-apply-coupon').click(function () {
+            var inputVal = $('#coupon-input').val().trim();
+            if (inputVal === "") {
+                showMyToast("Vui lòng nhập mã giảm giá!", "error");
+                return;
+            }
+            calculateOrderSummary(true, false);
+        });
+
+        $(document).on('click', '.remove-coupon', function () {
+            calculateOrderSummary(false, true);
+        });
+
+        $('.cart-item-checkbox, .cart-item-checkbox-all').change(function () {
+            calculateOrderSummary(false, false);
+        });
+        $('input[name="shipping"]').change(function () {
+            calculateOrderSummary(false, false);
+        });
+
+        $('#btn-checkout').click(function(e) {
+            e.preventDefault();
+            var selectedCount = $('.cart-item-checkbox:checked').length;
+            if (selectedCount === 0) {
+                showMyToast("Vui lòng chọn ít nhất 1 sản phẩm để thanh toán!", "error");
+            } else {
+                window.location.href = '@Url.Action("checkout", "Home")';
+            }
+        });
+
+        calculateOrderSummary(false, false);
+    });
+    </script>
+}

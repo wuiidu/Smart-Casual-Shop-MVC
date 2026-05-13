@@ -1,0 +1,381 @@
+﻿@model ShopQuanAo_MVC.Models.ProductVM
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Chi Tiết Sản Phẩm";
+
+    var images = ViewBag.ListImages as List<ShopQuanAo_MVC.Models.HINH_ANH_SP>;
+    var comments = ViewBag.ListComments as List<ShopQuanAo_MVC.Models.DANH_GIA>;
+    var related = ViewBag.RelatedProducts as List<ShopQuanAo_MVC.Models.ProductVM>;
+}
+
+<style>
+    /* Ẩn 2 nút mũi tên tăng giảm mặc định của trình duyệt trong ô input type="number" */
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
+
+    /* Chỉnh chiều rộng ô input kích thước & số lượng ngắn lại */
+    .short-input {
+        max-width: 130px;
+    }
+</style>
+
+<div class="x-breadcrumb__area base-bg mb-2">
+    <div class="container">
+        <div class="x-breadcrumb__list">
+            <span><a href="@Url.Action("Index", "Home")">Trang chủ</a></span>
+            <span class="dvdr"><i class="icon-arrow-right"></i></span>
+            <span>Chi tiết sản phẩm</span>
+        </div>
+    </div>
+</div>
+
+@*Thông Tin Sản Phẩm*@
+<section class="product__details-area mb-35">
+    <div class="container">
+        <div class="row gutter-y-30">
+            @*Ảnh*@
+            <div class="col-xl-6 col-lg-6">
+                <div class="product__details-thumb-tab">
+                    @*Ảnh lớn*@
+                    <div class="tab-content mb-3" id="pills-tabContent">
+                        @if (images != null && images.Count > 0)
+                        {
+                            int i = 0;
+                            foreach (var img in images)
+                            {
+                                var activeClass = i == 0 ? "show active" : "";
+                                <div class="tab-pane fade @activeClass" id="image-@i" role="tabpanel">
+                                    <div class="product__details-thumb-content w-img text-center">
+                                        <img src="/@img.DuongDan" alt="@Model.TenSanPham" style="width:100%; max-height:400px; object-fit:contain;">
+                                    </div>
+                                </div>
+                                i++;
+                            }
+                        }
+                    </div>
+
+                    @*Ảnh nhỏ*@
+                    <div class="product__details-thumb-nav x-tab">
+                        <nav>
+                            <div class="nav nav-tabs justify-content-center gap-2" role="tablist">
+                                @if (images != null && images.Count > 0)
+                                {
+                                    int j = 0;
+                                    foreach (var img in images)
+                                    {
+                                        var activeClass = j == 0 ? "active" : "";
+                                        <button class="nav-link @activeClass border" data-bs-toggle="tab" data-bs-target="#image-@j" type="button" role="tab">
+                                            <img src="/@img.DuongDan" alt="thumb" style="width:90%; height:90%; object-fit:cover;">
+                                        </button>
+                                        j++;
+                                    }
+                                }
+                            </div>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+
+            @*Thông tin & Tùy chọn*@
+            <div class="col-xl-6 col-lg-6">
+                <div class="product__details-wrapper">
+                    <h3 class="product__details-title mb-3">@Model.TenSanPham</h3>
+
+                    <div class="product__details-rating d-flex align-items-center mb-3">
+                        @if (ViewBag.Rating > 0)
+                        {
+                            <span class="text-warning fw-bold">
+                                @(((double)ViewBag.Rating).ToString("0.0")) <i class="fas fa-star"></i>
+                            </span>
+                            <span class="text-muted small ms-1">(@ViewBag.RatingCount đánh giá)</span>
+                        }
+                        else
+                        {
+                            <span class="text-warning small">Chưa có đánh giá</span>
+                        }
+                    </div>
+
+                    <p class="mb-4 text-muted">@Model.MoTa</p>
+
+                    <div class="product__details-price mb-4">
+                        <span class="product__details-ammount new-ammount fw-bold text-danger fs-3">
+                            @Model.GiaBan.ToString("N0")đ
+                        </span>
+                    </div>
+
+                    <div class="product__details-action">
+                        @using (Html.BeginForm("AddToCartFromDetails", "Home", FormMethod.Post))
+                        {
+                            @* Input ẩn chứa Mã Sản Phẩm *@
+                            <input type="hidden" name="MaSP" value="@Model.MaSP" />
+
+                            <div class="row g-3">
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label fw-bold">Kích Thước:</label>
+                                    @Html.DropDownList("SizeId", (IEnumerable<SelectListItem>)ViewBag.ListSizes, new { @class = "form-select short-input" })
+                                </div>
+
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label fw-bold">Số lượng:</label>
+                                    <div class="input-group short-input">
+                                        <button class="btn btn-outline-secondary" type="button" id="btnMinus">-</button>
+                                        <input type="number" class="form-control text-center" value="1" min="1" id="txtQuantity" name="Quantity">
+                                        <button class="btn btn-outline-secondary" type="button" id="btnPlus">+</button>
+                                    </div>
+                                </div>
+
+                                <div class="col-12 mt-4 d-flex gap-2">
+                                    @* Nút MUA NGAY: Giữ nguyên submit để C# xử lý chuyển trang *@
+                                    <button type="submit" name="submitType" value="buy" class="btn btn-danger flex-grow-1 py-3">MUA NGAY</button>
+
+                                    @* Nút THÊM VÀO GIỎ: Đổi thành type="button" và thêm ID để dùng AJAX *@
+                                    <button type="button" id="btnAddToCartAJAX" class="btn btn-primary flex-grow-1 py-3">THÊM VÀO GIỎ</button>
+                                </div>
+                            </div>
+                        }
+
+                        @* Hiển thị thông báo thành công từ Server gửi về *@
+                        @if (TempData["SuccessMessage"] != null)
+                        {
+                            <div class="alert alert-success mt-3" role="alert">
+                                <i class="fas fa-check-circle me-1"></i> @TempData["SuccessMessage"]
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@*Đánh Giá*@
+<section id="review-area" class="product__review-area mb-20 bg-light mt-1">
+    <div class="container">
+        <h4 class="mb-4">Đánh giá sản phẩm</h4>
+
+        @*Viết đánh giá*@
+        <div class="card mb-4 shadow-sm border-0">
+            <div class="card-body">
+                <h6 class="card-title mb-3">Viết đánh giá của bạn</h6>
+                <form action="@Url.Action("AddReview", "Home")" method="post">
+
+                    @*Input ẩn để gửi Mã Sản Phẩm về Server*@
+                    <input type="hidden" name="MaSP" value="@Model.MaSP" />
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="reviewName" class="form-label fw-bold">Tên của bạn:</label>
+                            <input type="text" class="form-control" id="reviewName" name="TenKhachHang" placeholder="Nhập tên..." required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Đánh giá:</label>
+                            <input type="hidden" id="reviewRating" name="SoSao" value="5">
+
+                            <div id="star-container" class="d-flex align-items-center gap-1 mt-1" style="font-size: 1.2rem; cursor: pointer;">
+                                <i class="fas fa-star text-warning star-item" data-value="1"></i>
+                                <i class="fas fa-star text-warning star-item" data-value="2"></i>
+                                <i class="fas fa-star text-warning star-item" data-value="3"></i>
+                                <i class="fas fa-star text-warning star-item" data-value="4"></i>
+                                <i class="fas fa-star text-warning star-item" data-value="5"></i>
+                                <span id="rating-text" class="ms-2 small text-muted">(Tuyệt vời)</span>
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <label for="reviewContent" class="form-label fw-bold">Nội dung đánh giá:</label>
+                            <textarea class="form-control" id="reviewContent" name="NoiDung" rows="3" placeholder="Chia sẻ cảm nhận về sản phẩm..." required></textarea>
+                        </div>
+
+                        <div class="col-12 text-end">
+                            <button type="submit" class="btn btn-primary px-4">
+                                <i class="fas fa-paper-plane me-1"></i> Gửi đánh giá
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        @*Đánh giá sản phẩm*@
+        <div class="list-group">
+            @if (comments != null && comments.Count > 0)
+            {
+                foreach (var c in comments)
+                {
+                    <div class="list-group-item mb-3 border-0 shadow-sm rounded">
+                        <div class="d-flex align-items-center mb-1 justify-content-between">
+                            <strong class="me-2">@c.TenKhachHang</strong>
+                            <span class="text-warning">
+                                @for (int k = 1; k <= 5; k++)
+                                {
+                                    if (k <= c.SoSao)
+                                    {<i class="fas fa-star"></i> }
+                                    else
+                                    { <i class="far fa-star"></i>}
+                                }
+                            </span>
+                        </div>
+                        <div class="text-muted small">Đã mua hàng</div>
+                        <div>@c.NoiDung</div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="text-center text-muted py-4">Chưa có đánh giá nào cho sản phẩm này.</div>
+            }
+        </div>
+    </div>
+</section>
+
+@*Sản Phẩm Liên Quan*@
+<section class="container mb-10">
+    <h4 class="mb-4">Sản phẩm liên quan</h4>
+    <div class="row gutter-y-30">
+        @if (related != null)
+        {
+            foreach (var item in related)
+            {
+                <div class="col-xl-3 col-md-6 col-sm-6 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="position-relative">
+                            <a href="@Url.Action("product_details", "Home", new { id = item.MaSP })">
+                                <img src="/@item.AnhDaiDien" class="card-img-top" alt="@item.TenSanPham"
+                                     style="width:100%; height:200px; object-fit:contain; border-bottom:1px solid #eee;">
+                            </a>
+                        </div>
+                        <div class="card-body d-flex flex-column">
+                            <div class="mb-1 d-flex align-items-center">
+                                <span class="text-warning small">
+                                    @item.DiemDanhGia.ToString("0.0") <i class="fas fa-star"></i>
+                                </span>
+                                <span class="text-muted small ms-1">(@item.SoLuongDanhGia)</span>
+                            </div>
+                            <h5 class="card-title mb-2">
+                                <a href="@Url.Action("product_details", "Home", new { id = item.MaSP })" class="text-decoration-none text-dark">
+                                    @item.TenSanPham
+                                </a>
+                            </h5>
+                            <div class="mt-auto d-flex justify-content-between align-items-center">
+                                <span class="fw-bold text-danger">@item.GiaBan.ToString("N0")đ</span>
+
+                                <a href="#" class="btn btn-outline-primary btn-sm" title="Thêm vào giỏ">
+                                    <i class="fas fa-shopping-cart"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</section>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // XỬ LÝ SỐ LƯỢNG
+        const btnMinus = document.getElementById('btnMinus');
+        const btnPlus = document.getElementById('btnPlus');
+        const txtQty = document.getElementById('txtQuantity');
+        if (btnMinus && btnPlus && txtQty) {
+            btnMinus.addEventListener('click', () => {
+                let val = parseInt(txtQty.value) || 1;
+                if (val > 1) txtQty.value = val - 1;
+            });
+            btnPlus.addEventListener('click', () => {
+                let val = parseInt(txtQty.value) || 1;
+                txtQty.value = val + 1;
+            });
+        }
+
+        // XỬ LÝ ĐÁNH GIÁ SAO
+        const stars = document.querySelectorAll('.star-item');
+        const ratingInput = document.getElementById('reviewRating');
+        const ratingText = document.getElementById('rating-text');
+        // Mảng text hiển thị tương ứng 1->5 sao
+        const textLabels = ["Rất tệ", "Tệ", "Bình thường", "Tốt", "Tuyệt vời"];
+        // Hàm tô màu sao
+        function highlightStars(count) {
+            stars.forEach(star => {
+                const value = parseInt(star.getAttribute('data-value'));
+                if (value <= count) {
+                    star.className = 'fas fa-star text-warning star-item';
+                } else {
+                    star.className = 'far fa-star text-secondary star-item';
+                }
+            });
+            if (ratingText) ratingText.textContent = `(${textLabels[count - 1]})`;
+        }
+        // Hiệu ứng chuột khi ấn vào sao
+        if (stars.length > 0) {
+            stars.forEach(star => {
+                star.addEventListener('mouseover', function () {
+                    const value = parseInt(this.getAttribute('data-value'));
+                    highlightStars(value);
+                });
+                star.addEventListener('click', function () {
+                    const value = parseInt(this.getAttribute('data-value'));
+                    ratingInput.value = value;
+                });
+            });
+
+            document.getElementById('star-container').addEventListener('mouseleave', function () {
+                const currentValue = parseInt(ratingInput.value);
+                highlightStars(currentValue);
+            });
+        }
+
+        // Tự động cuộn xuống phần đánh giá nếu vừa gửi xong
+        if (window.location.href.includes('review=success')) {
+            const reviewArea = document.getElementById('review-area');
+            if (reviewArea) {
+                reviewArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        // Xử lý sự kiện click nút "THÊM VÀO GIỎ"
+        $('#btnAddToCartAJAX').click(function () {
+            // Lấy dữ liệu từ các ô input
+            var maSP = $('input[name="MaSP"]').val();
+            var sizeId = $('#SizeId').val();
+            var quantity = $('#txtQuantity').val();
+
+            // Gửi về Server
+            $.ajax({
+                url: '/Home/AddToCartAJAX',
+                type: 'POST',
+                data: {
+                    MaSP: maSP,
+                    SizeId: sizeId,
+                    Quantity: quantity
+                },
+                success: function (response) {
+                    if (response.success) {
+                        $('.x-cart-count').text(response.count);
+                        var toastEl = document.getElementById('cartToast');
+                        if (toastEl) {
+                            var toast = new bootstrap.Toast(toastEl);
+                            $('.toast-body').text(response.message);
+                            toast.show();
+                        } else {
+                            alert(response.message);
+                        }
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function () {
+                    alert('Lỗi kết nối đến máy chủ.');
+                }
+            });
+        });
+    });
+</script>

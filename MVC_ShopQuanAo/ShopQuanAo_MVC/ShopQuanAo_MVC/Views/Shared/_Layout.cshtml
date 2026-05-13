@@ -1,0 +1,88 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewBag.Title | Shop thời trang Smart Casual</title>
+    <link rel="stylesheet" href="/assets/vendors/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/assets/vendors/fontawesome/css/all.min.css" />
+    <link rel="stylesheet" href="/assets/vendors/swiftcart-icons/style.css" />
+    <link rel="stylesheet" href="/assets/vendors/spacing/spacing.css" />
+    <link rel="stylesheet" href="/assets/css/style.css" />
+</head>
+<body>
+    @* HEADER *@
+    @Html.Partial("_Header")
+
+    @* NỘI DUNG *@
+    @RenderBody()
+
+    @* FOOTER *@
+    @Html.Partial("_Footer")
+
+    @*Thông báo khi thêm vào giỏ hàng*@
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 9999">
+        <div style="width: fit-content; max-width: 100%; white-space: nowrap;" id="cartToast" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body"></div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    <script>
+        // Hàm cập nhật số lượng giỏ hàng
+        function refreshCartCount() {
+            $.ajax({
+                url: '/Home/GetCartCount',
+                type: 'GET',
+                cache: false,
+                success: function (data) {
+                    $('.x-cart-count').text(data.count);
+                }
+            });
+        }
+
+        // Hàm cập nhật số lượng đơn hàng
+        function refreshOrderCount() {
+            $.ajax({
+                url: '/Home/GetOrderCount',
+                type: 'GET',
+                cache: false,
+                success: function (data) {
+                    $('.x-order-count').text(data.count);
+                }
+            });
+        }
+
+        $(document).ready(function () {
+            // Logic dropdown
+            const userDropdown = document.querySelector('.user-dropdown');
+            if (userDropdown) {
+                userDropdown.addEventListener('mouseenter', function () {
+                    const dropdown = userDropdown.querySelector('.dropdown-menu');
+                    if (dropdown) dropdown.classList.add('show');
+                });
+                userDropdown.addEventListener('mouseleave', function () {
+                    const dropdown = userDropdown.querySelector('.dropdown-menu');
+                    if (dropdown) dropdown.classList.remove('show');
+                });
+            }
+
+            // Gọi lần đầu khi tải trang
+            refreshCartCount();
+            refreshOrderCount();
+        });
+
+        // Sự kiện khi người dùng ấn nút Back/Forward quay lại trang này
+        window.addEventListener('pageshow', function (event) {
+            refreshCartCount();
+            refreshOrderCount();
+        });
+    </script>
+    @RenderSection("scripts", required: false)
+</body>
+</html>
