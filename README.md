@@ -1,4 +1,4 @@
-##### **🛒 Smart Casual Clothing Store (MVC \& SQL Server)**
+**🛒 Smart Casual Clothing Store (MVC \& SQL Server)**
 
 Hệ thống website thời trang được xây dựng trên nền tảng ASP.NET MVC.
 
@@ -6,7 +6,7 @@ Hệ thống website thời trang được xây dựng trên nền tảng ASP.NE
 
 
 
-###### **🗄️BƯỚC 1: CẤU HÌNH CƠ SỞ DỮ LIỆU (SQL SERVER)**
+**🗄️BƯỚC 1: CẤU HÌNH CƠ SỞ DỮ LIỆU (SQL SERVER)**
 
 Trong thư mục SQL\_ShopQuanAo\_v0.28, bạn vui lòng chạy lần lượt các file SQL theo thứ tự sau để đảm bảo cấu trúc và dữ liệu:
 
@@ -18,7 +18,7 @@ Trong thư mục SQL\_ShopQuanAo\_v0.28, bạn vui lòng chạy lần lượt c�
 
 
 
-###### **📦BƯỚC 2: KHÔI PHỤC THƯ VIỆN TRONG VISUAL STUDIO**
+**📦BƯỚC 2: KHÔI PHỤC THƯ VIỆN TRONG VISUAL STUDIO**
 
 Do thư mục packages đã được lược bỏ, bạn cần cài đặt lại compiler platform để tránh lỗi khi build:
 
@@ -32,7 +32,7 @@ Do thư mục packages đã được lược bỏ, bạn cần cài đặt lại
 
 
 
-###### **🚀BƯỚC 3: BUILD VÀ CHẠY DỰ ÁN**
+**🚀BƯỚC 3: BUILD VÀ CHẠY DỰ ÁN**
 
 &#x09;1. Tại bảng **Solution Explorer**, click chuột phải vào Solution chọn **Rebuild Solution** để tái tạo lại các thư mục hệ thống (bin/obj).
 
