@@ -12,7 +12,7 @@ Hệ thống website thời trang được xây dựng trên nền tảng ASP.NE
 
 **🗄️BƯỚC 1: CẤU HÌNH CƠ SỞ DỮ LIỆU (SQL SERVER)**
 
-Trong thư mục SQL\_ShopQuanAo\_v0.28, bạn vui lòng chạy lần lượt các file SQL theo thứ tự sau để đảm bảo cấu trúc và dữ liệu:
+Trong thư mục SQL\_ShopQuanAo, bạn vui lòng chạy lần lượt các file SQL theo thứ tự sau để đảm bảo cấu trúc và dữ liệu:
 
 &#x09;1. **1\_TaoBang.sql**: Tạo cấu trúc các bảng.
 
