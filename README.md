@@ -10,7 +10,7 @@ Hệ thống website thời trang được xây dựng trên nền tảng ASP.NE
 
 
 
-**🗄️BƯỚC 1: CẤU HÌNH CƠ SỞ DỮ LIỆU (SQL SERVER)**
+**🗄️ BƯỚC 1: CẤU HÌNH CƠ SỞ DỮ LIỆU (SQL SERVER)**
 
 Trong thư mục SQL\_ShopQuanAo, bạn vui lòng chạy lần lượt các file SQL theo thứ tự sau để đảm bảo cấu trúc và dữ liệu:
 
@@ -26,7 +26,7 @@ Trong thư mục SQL\_ShopQuanAo, bạn vui lòng chạy lần lượt các file
 
 
 
-**📦BƯỚC 2: KHÔI PHỤC THƯ VIỆN TRONG VISUAL STUDIO**
+**📦 BƯỚC 2: KHÔI PHỤC THƯ VIỆN TRONG VISUAL STUDIO**
 
 Do thư mục packages đã được lược bỏ, bạn cần cài đặt lại compiler platform để tránh lỗi khi build:
 
@@ -44,11 +44,45 @@ Do thư mục packages đã được lược bỏ, bạn cần cài đặt lại
 
 
 
-**🚀BƯỚC 3: BUILD VÀ CHẠY DỰ ÁN**
+**🚀 BƯỚC 3: BUILD VÀ CHẠY DỰ ÁN**
 
 &#x09;1. Tại bảng **Solution Explorer**, click chuột phải vào Solution chọn **Rebuild Solution** để tái tạo lại các thư mục hệ thống (bin/obj).
 
 &#x09;2. Nhấn **F5** (hoặc **Ctrl + F5**) để khởi chạy chương trình trên trình duyệt.
+
+
+
+\--------------------------------------------------------------------------------------------------------------------
+
+
+
+**🔑 THÔNG TIN TÀI KHOẢN TRẢI NGHIỆM**
+
+Hệ thống sử dụng **giao diện đăng nhập chung** cho cả khách hàng và nhân viên quản lý. Tùy vào tài khoản đăng nhập mà hệ thống sẽ điều hướng đến trang bán hàng hoặc trang quản trị tương ứng.
+
+|**Vai trò**|**Tên đăng nhập**|**Mật khẩu**|
+|-|-|-|
+|**Quản lý (Admin)**|admin|Admin@123|
+|**Nhân viên (Staff)**|staff|Staff@123|
+|**Khách hàng Demo**|demo1@gmail.com|Demo@123|
+
+(Dữ liệu chi tiết nằm trong bảng NHAN\_VIEN và KHACH\_HANG)
+
+
+
+\--------------------------------------------------------------------------------------------------------------------
+
+
+
+**🎟️ HỆ THỐNG MÃ GIẢM GIÁ**
+
+Để trải nghiệm tính năng tính toán khuyến mãi trong giỏ hàng, bạn có thể sử dụng các mã sau:
+
+* **SAVE10**: Giảm 10% tổng hóa đơn.
+* **CASH5**: Giảm trực tiếp 5.000đ.
+* **CASH20**: Giảm trực tiếp 20.000đ.
+* **FREESHIP**: Miễn phí vận chuyển.
+* **NEW25**: Giảm 25% cho khách hàng mới.
 
 
 
