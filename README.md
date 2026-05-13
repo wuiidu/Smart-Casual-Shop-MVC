@@ -6,6 +6,8 @@ Hệ thống website thời trang được xây dựng trên nền tảng ASP.NE
 
 
 
+
+
 **🗄️BƯỚC 1: CẤU HÌNH CƠ SỞ DỮ LIỆU (SQL SERVER)**
 
 Trong thư mục SQL\_ShopQuanAo\_v0.28, bạn vui lòng chạy lần lượt các file SQL theo thứ tự sau để đảm bảo cấu trúc và dữ liệu:
@@ -15,6 +17,8 @@ Trong thư mục SQL\_ShopQuanAo\_v0.28, bạn vui lòng chạy lần lượt c�
 &#x09;2. **2\_Trigger.sql**: Thiết lập các Trigger nghiệp vụ.
 
 &#x09;3. **3\_DuLieu.sql**: Thêm dữ liệu mẫu để trải nghiệm.
+
+
 
 
 
@@ -32,11 +36,15 @@ Do thư mục packages đã được lược bỏ, bạn cần cài đặt lại
 
 
 
+
+
 **🚀BƯỚC 3: BUILD VÀ CHẠY DỰ ÁN**
 
 &#x09;1. Tại bảng **Solution Explorer**, click chuột phải vào Solution chọn **Rebuild Solution** để tái tạo lại các thư mục hệ thống (bin/obj).
 
 &#x09;2. Nhấn **F5** (hoặc **Ctrl + F5**) để khởi chạy chương trình trên trình duyệt.
+
+
 
 
 
